@@ -1,0 +1,8 @@
+# Ficheros intermedios de LaTeX (el PDF final SemArq2_TeamBales.pdf sí se sube)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

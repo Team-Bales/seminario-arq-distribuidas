@@ -1,0 +1,94 @@
+% Documento principal de la entrega. Genera SemArq2_TeamBales.pdf:
+%   cd latex && latexmk -pdf -jobname=SemArq2_TeamBales main.tex
+
+\documentclass[11pt,a4paper]{article}
+\input{preambulo}
+
+\begin{document}
+
+% ---------- Portada ----------
+% La tabla de integrantes debe coincidir con la tabla de miembros del README principal.
+\begin{titlepage}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[portadaoscuro] (current page.north west) rectangle ([yshift=-8cm]current page.north east);
+    \fill[portadaacento] ([yshift=-8cm]current page.north west) rectangle ([yshift=-8.25cm]current page.north east);
+    \node[anchor=north west, text=portadaclaro, font=\large\scshape]
+      at ([xshift=2.5cm, yshift=-2.2cm]current page.north west) {Ingeniería de Software};
+    \node[anchor=north west, text=white, font=\fontsize{34}{38}\selectfont\bfseries]
+      at ([xshift=2.5cm, yshift=-3.1cm]current page.north west) {Seminario sobre Arquitectura 2};
+    \node[anchor=north west, text=portadaclaro, font=\Large]
+      at ([xshift=2.5cm, yshift=-5cm]current page.north west) {Arquitecturas de Software Distribuidas};
+    \node[anchor=north west, text=white, font=\large]
+      at ([xshift=2.5cm, yshift=-6.2cm]current page.north west) {Service-Based, Event-Driven, Space-Based, SOA y Microservicios};
+    \fill[portadaoscuro] (current page.south west) rectangle ([yshift=1cm]current page.south east);
+  \end{tikzpicture}
+
+  \vspace*{6.6cm}
+
+  \begin{center}
+    {\color{portadagris}\large\scshape Equipo 7\par}
+    \vspace{0.1cm}
+    {\color{portadaoscuro}\fontsize{50}{56}\selectfont\bfseries Bales\par}
+    \vspace{0.35cm}
+    {\color{portadaacento}\rule{3.5cm}{2.5pt}\par}
+  \end{center}
+
+  \vspace{1.4cm}
+
+  \noindent{\color{portadagris}\scshape Integrantes\par}
+  \vspace{0.3cm}
+  {\renewcommand{\arraystretch}{1.7}%
+  \rowcolors{2}{portadafila}{white}\noindent%
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X >{\ttfamily\small}l >{\raggedright\arraybackslash}X}
+    \rowcolor{portadaoscuro}
+    \textcolor{white}{\textbf{Integrante}} & \textcolor{white}{\rmfamily\normalsize\textbf{GitHub}} & \textcolor{white}{\textbf{Pregunta(s)}} \\
+    Heily Rodríguez Rodríguez & @heilyrodriguez225 &  \\
+     & @Mackandal04 &  \\
+     & @QuiquiMatCom2004 &  \\
+     & @solerch5510 &  \\
+     & @FontesHabana &  \\
+  \end{tabularx}\par}
+
+  \vfill
+
+  \begin{center}
+    {\color{portadagris}\small\scshape Repositorio\par}
+    \vspace{0.15cm}
+    {\color{portadaacento}\url{https://github.com/Team-Bales/seminario-arq-distribuidas}\par}
+  \end{center}
+  \vspace{0.6cm}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{P1: Análisis Comparativo de Comunicación y Acoplamiento}
+\inciso{a) Acoplamiento dinámico}{preguntas/p1-comunicacion-acoplamiento/latex/inciso-a.tex}
+\inciso{b) Tolerancia a fallos y consistencia}{preguntas/p1-comunicacion-acoplamiento/latex/inciso-b.tex}
+
+\newpage
+\section{P2: Diseño para Elasticidad Extrema y Consistencia de Datos}
+\inciso{a) Space-Based vs. Microservices}{preguntas/p2-elasticidad-consistencia/latex/inciso-a.tex}
+\inciso{b) Colisiones de datos en cachés replicadas}{preguntas/p2-elasticidad-consistencia/latex/inciso-b.tex}
+
+\newpage
+\section{P3: Análisis de Fallos y Resiliencia en Arquitecturas Dirigidas por Eventos}
+\inciso{a) Impacto del fallo}{preguntas/p3-fallos-resiliencia-eda/latex/inciso-a.tex}
+\inciso{b) Workflow Event Pattern}{preguntas/p3-fallos-resiliencia-eda/latex/inciso-b.tex}
+
+\newpage
+\section{P4: El Dilema de la Granularidad y el Acoplamiento en Microservicios}
+\inciso{a) Error fundamental de diseño}{preguntas/p4-granularidad-microservicios/latex/inciso-a.tex}
+\inciso{b) Nueva estrategia de descomposición}{preguntas/p4-granularidad-microservicios/latex/inciso-b.tex}
+
+\newpage
+\section{P5: Comparación de Atributos de Calidad y Trade-offs}
+\inciso{a) Consistencia de datos}{preguntas/p5-atributos-calidad-tradeoffs/latex/inciso-a.tex}
+\inciso{b) Despliegue independiente y trade-offs}{preguntas/p5-atributos-calidad-tradeoffs/latex/inciso-b.tex}
+
+\newpage
+\section{P6: El Legado de SOA y su Influencia en Arquitecturas Modernas}
+\inciso{a) Reutilización en Microservices}{preguntas/p6-legado-soa/latex/inciso-a.tex}
+\inciso{b) Cuándo todavía conviene orquestar}{preguntas/p6-legado-soa/latex/inciso-b.tex}
+
+\end{document}

@@ -1,0 +1,62 @@
+% Preámbulo común de SemArq2_TeamBales.pdf. Lo carga main.tex; los fragmentos de
+% cada inciso no deben tener preámbulo propio ni cargar paquetes.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+
+\usepackage{graphicx}
+% Las rutas de las imágenes son relativas a la raíz del repo, por ejemplo:
+% \includegraphics{preguntas/p2-elasticidad-consistencia/diagramas/mi-diagrama.png}
+\graphicspath{{../}}
+
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+
+% ---------- Colores de la portada ----------
+\definecolor{portadaoscuro}{HTML}{1E3A6E}
+\definecolor{portadaacento}{HTML}{3D5FB0}
+\definecolor{portadaclaro}{HTML}{C9D8F5}
+\definecolor{portadagris}{HTML}{6B7280}
+\definecolor{portadafila}{HTML}{EEF3FC}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{codigofondo}{HTML}{F6F8FA}
+\definecolor{codigoclave}{HTML}{0033B3}
+\definecolor{codigocomentario}{HTML}{6A737D}
+\definecolor{codigocadena}{HTML}{067D17}
+
+\lstdefinestyle{codigogeneral}{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codigoclave}\bfseries,
+  commentstyle=\color{codigocomentario}\itshape,
+  stringstyle=\color{codigocadena},
+  backgroundcolor=\color{codigofondo},
+  frame=single, rulecolor=\color{black!15},
+  numbers=left, numberstyle=\tiny\color{black!50},
+  breaklines=true, showstringspaces=false, tabsize=4,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+           {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+           {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {¿}{{?`}}1 {¡}{{!`}}1
+           {→}{{$\rightarrow$}}2 {×}{{$\times$}}1
+}
+\lstset{style=codigogeneral}
+
+% ---------- Incisos ----------
+% \inciso{título}{ruta del fragmento desde la raíz del repo}
+% main.tex pone el título de la subsección; el fragmento solo trae el contenido.
+% Si el fragmento todavía no existe, se muestra "Pendiente" y el PDF sigue compilando.
+\newcommand{\inciso}[2]{%
+  \subsection{#1}%
+  \InputIfFileExists{../#2}{}{\textit{Pendiente.}}%
+}
