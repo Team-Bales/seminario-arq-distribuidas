@@ -88,8 +88,10 @@ Cada pregunta tiene dos incisos (a, b); cada inciso es un issue propio con etiqu
 ## Reparto del trabajo
 
 El trabajo está dividido en issues, uno por inciso (12) más uno de formalización y
-entrega del PDF final, con la etiqueta `p1`…`p6` o `entrega`. Cada miembro se asigna
-los suyos. Seguimiento en el tablero del proyecto: [Seminario Arq. Distribuidas](https://github.com/orgs/Team-Bales/projects).
+entrega del PDF final, con la etiqueta `p1`…`p6` o `entrega`. Las issues ya están
+asignadas (ver tabla de Miembros); la columna *Pregunta(s)* de esa tabla y la portada
+del PDF se actualizan a medida que se van cerrando las issues de cada pregunta.
+Seguimiento en el tablero del proyecto: [Seminario Arq. Distribuidas](https://github.com/orgs/Team-Bales/projects/4).
 
 ## Miembros
 
@@ -98,8 +100,7 @@ preguntas en que trabajó.
 
 | Nombre | GitHub | Pregunta(s) |
 |---|---|---|
-| Heily Rodríguez Rodríguez | @heilyrodriguez225 | |
-| | @Mackandal04 | |
-| | @QuiquiMatCom2004 | |
-| | @solerch5510 | |
-| | @FontesHabana | |
+| Heily Rodríguez Rodríguez | @heilyrodriguez225 | P1, P4 |
+| | @Mackandal04 | P5 |
+| | @QuiquiMatCom2004 | P3, P6 |
+| | @solerch5510 | P2 |
