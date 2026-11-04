@@ -100,7 +100,7 @@ preguntas en que trabajó.
 
 | Nombre | GitHub | Pregunta(s) |
 |---|---|---|
-| Heily Rodríguez Rodríguez | @heilyrodriguez225 | P1, P4 |
-| | @Mackandal04 | P5 |
-| | @QuiquiMatCom2004 | P3, P6 |
-| | @solerch5510 | P2 |
+| Heily Rodríguez Rodríguez | @heilyrodriguez225 | |
+| | @Mackandal04 | |
+| | @QuiquiMatCom2004 | |
+| | @solerch5510 | |
