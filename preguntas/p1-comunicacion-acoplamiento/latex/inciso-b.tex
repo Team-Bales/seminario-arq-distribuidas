@@ -1,1 +1,97 @@
 % P1-b — Tolerancia a fallos y consistencia. Sin preámbulo ni \subsection (los pone main.tex).
+
+\subsubsection{Marco: ACID, BASE y la connascencia de valores}
+
+El inciso extiende el escenario de la subasta: el servicio de pago falla justo
+después de notificarse al ganador. Evaluamos qué garantiza cada diseño sobre la
+consistencia de los datos --- \textbf{ACID} (atomicidad, consistencia, aislamiento,
+durabilidad) frente a \textbf{BASE} (disponibilidad básica, estado flexible,
+consistencia eventual; Richards \& Ford, 2020, cap.~13) --- y sobre la tolerancia a
+fallos, es decir, qué tan rápido el sistema detecta el fallo y recupera un estado
+correcto. La connascencia de valores (CoV) es otra vez la clave: cuando una
+transacción de negocio cruza límites de servicio, ``creates the worst kind of
+dynamic connascence'' (Richards \& Ford, 2020, cap.~17), porque varios estados
+remotos deben cambiar juntos o no cambiar.
+
+\subsubsection{Análisis por enfoque}
+
+\paragraph{Coreografía.}
+El servicio de pago falla sin que nadie más lo note: ``no one in the system is
+aware of that crash... the Inventory event processor still decrements the
+inventory, and all other event processors react as though everything is fine''
+(Richards \& Ford, 2020, cap.~14). En el escenario, el ganador ya fue notificado
+--- un efecto irreversible --- y el pago queda bloqueado mientras el resto del
+flujo avanza como si hubiera tenido éxito: es BASE en su forma más débil,
+disponible pero sin garantía de completar la transacción de negocio ni de deshacer
+lo ya hecho. La recuperación exige mecanismos añadidos por fuera de la topología:
+colas con reintento y cola de mensajes fallidos (\emph{dead-letter queue}), un
+patrón \emph{outbox} para no perder el evento, o una saga coreografiada donde el
+propio servicio de inventario escuche un evento de compensación.
+
+\paragraph{Orquestación.}
+El mediador conoce el estado de cada paso: si el pago falla, detiene el flujo y
+persiste el estado en su propio almacén --- ``the mediator... stops the workflow
+and records the state of the request... once payment is eventually applied, the
+workflow can be restarted from where it left off'' (Richards \& Ford, 2020,
+cap.~14) ---, o dispara las compensaciones del patrón \textbf{Saga}: deshacer
+(\emph{undo}) los pasos ya completados, como retirar la notificación o liberar el
+inventario reservado (Richards \& Ford, 2020, cap.~17). Sigue siendo BASE --- no
+hay rollback atómico real entre servicios ---, pero es una consistencia eventual
+\emph{gobernada}: el mediador garantiza que el proceso termine en un estado
+conocido, a cambio del acoplamiento que ya se pagó en el inciso~a.
+
+\paragraph{Service-Based Architecture (SBA).}
+Las tres acciones viven en un único servicio con una base de datos compartida, así
+que pago e inventario pueden envolverse en una transacción ACID real: si el pago
+falla, la base de datos revierte íntegra y automáticamente (Richards \& Ford, 2020,
+cap.~13). El matiz es la notificación: si ocurre, como indica el enunciado, antes
+de intentar el pago, ya escapó de la transacción y no se puede deshacer con un
+rollback de base de datos. Pero como todo el flujo corre en un mismo proceso
+síncrono, el servicio conoce el fallo de inmediato y puede emitir una compensación
+explícita (un segundo aviso de que el pago no se procesó) sin depender de ningún
+mecanismo distribuido. El costo de esta fortaleza, visto en el inciso~a, es que el
+servicio grueso concentra el riesgo de despliegue y no escala el pago por
+separado.
+
+\subsubsection{Comparación y conclusión}
+
+\begin{table}[H]
+  \centering
+  \caption{Consistencia y recuperación ante el fallo del pago, por enfoque.}
+  \label{tab:p1b-comparacion}
+  \small
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.1cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+    \toprule
+    \textbf{Criterio} & \textbf{Coreografía} & \textbf{Orquestación} & \textbf{SBA} \\
+    \midrule
+    Modelo de consistencia &
+      BASE sin gobierno &
+      BASE gobernado (Saga) &
+      ACID dentro del servicio \\
+    Detección del fallo &
+      ninguna: nadie lo nota &
+      el mediador la detecta y persiste el estado &
+      inmediata (mismo proceso) \\
+    Riesgo de inconsistencia &
+      alto: el inventario avanza igual &
+      bajo: compensaciones explícitas &
+      nulo en la BD; solo en la notificación ya emitida \\
+    Recuperación &
+      manual/externa (DLQ, \emph{outbox}) &
+      automática: reintento o rollback lógico &
+      automática en la BD; compensación manual de la notificación \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+El fallo del pago expone el mismo trade-off del inciso~a, visto ahora desde la
+consistencia: la coreografía paga su desacoplamiento con BASE sin red de
+seguridad --- el inventario puede decrementarse sobre un pago que nunca ocurrió
+---; la orquestación compra consistencia eventual gobernada (Saga) con el
+acoplamiento hacia el mediador; y el SBA logra la consistencia más fuerte (ACID)
+porque el flujo nunca cruza la red, aunque la notificación --- al ser un efecto
+externo previo al fallo --- sigue necesitando una compensación explícita en los
+tres diseños. Ninguna arquitectura evita por completo la necesidad de compensar:
+la diferencia es si existe un lugar --- el mediador o el propio servicio --- que
+sepa que debe hacerlo.
