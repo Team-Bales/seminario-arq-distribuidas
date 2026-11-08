@@ -1,1 +1,26 @@
 % P4-a — Error fundamental de diseño. Sin preámbulo ni \subsection.
+
+El error fue caer en la \textbf{entity trap} (Richards \& Ford, 2020, cap.~8): el
+equipo tomó cada entidad de la base de datos (Empleado, Departamento, Nómina,
+Beneficios) y la convirtió directamente en un servicio, en vez de particionar por
+\emph{workflow} o dominio de negocio. ``The entity trap anti-pattern arises when an
+architect incorrectly identifies the database relationships as workflows in the
+application, a correspondence that rarely manifests in the real world'' (Richards
+\& Ford, 2020, cap.~8).
+
+Contratar a un nuevo empleado es un único \emph{workflow} de negocio que necesita
+que varias entidades cooperen en la misma transacción --- exactamente el criterio
+de \textbf{transacciones} que Richards y Ford (2020, cap.~17) señalan como guía de
+granularidad: ``the entities that need to cooperate in a transaction show
+architects a good service boundary''. Al ignorar ese criterio y trocear las
+entidades que debían colaborar, el equipo obligó a esa transacción a cruzar la red
+en cada paso, generando connascencia de valores entre servicios --- ``the worst
+kind of dynamic connascence'' (Richards \& Ford, 2020, cap.~17) --- sin ningún
+mecanismo de coordinación que la gestionara.
+
+El resultado es la fragilidad del monolito sin ninguno de los beneficios de los
+microservicios: ``too fine-grained a component design leads to too much
+communication between components to achieve results'' (Richards \& Ford, 2020,
+cap.~8). Microservicios demasiado pequeños, atados por una coreografía síncrona
+obligatoria, son en la práctica un \textbf{monolito distribuido}: toda la
+complejidad operativa de la red, ninguno de los desacoples que la justificarían.
