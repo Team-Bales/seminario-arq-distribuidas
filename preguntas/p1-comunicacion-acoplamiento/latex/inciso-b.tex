@@ -1,7 +1,5 @@
 % P1-b — Tolerancia a fallos y consistencia. Sin preámbulo ni \subsection (los pone main.tex).
 
-\subsubsection{Marco: ACID, BASE y la connascencia de valores}
-
 El inciso extiende el escenario de la subasta: el servicio de pago falla justo
 después de notificarse al ganador. Evaluamos qué garantiza cada diseño sobre la
 consistencia de los datos --- \textbf{ACID} (atomicidad, consistencia, aislamiento,
@@ -12,8 +10,6 @@ correcto. La connascencia de valores (CoV) es otra vez la clave: cuando una
 transacción de negocio cruza límites de servicio, ``creates the worst kind of
 dynamic connascence'' (Richards \& Ford, 2020, cap.~17), porque varios estados
 remotos deben cambiar juntos o no cambiar.
-
-\subsubsection{Análisis por enfoque}
 
 \paragraph{Coreografía.}
 El servicio de pago falla sin que nadie más lo note: ``no one in the system is
@@ -52,8 +48,6 @@ explícita (un segundo aviso de que el pago no se procesó) sin depender de ning
 mecanismo distribuido. El costo de esta fortaleza, visto en el inciso~a, es que el
 servicio grueso concentra el riesgo de despliegue y no escala el pago por
 separado.
-
-\subsubsection{Comparación y conclusión}
 
 \begin{table}[H]
   \centering

@@ -1,7 +1,5 @@
 # P1-a — Acoplamiento dinámico
 
-## Marco: la connascencia
-
 La **connascencia**, concepto que Richards y Ford (2020, cap. 3) aplican al análisis
 arquitectónico, mide el acoplamiento dinámico: dos componentes son connascentes si un
 cambio en uno obliga a modificar el otro. Interesan sus formas en tiempo de ejecución: **CoE** (el orden de
@@ -17,8 +15,6 @@ Además, cada llamada **síncrona** entre servicios crea connascencia dinámica
 mientras dura la espera —acoplando disponibilidad y latencia de ambos lados—,
 mientras que la **asíncrona** (*fire-and-forget*) los desacopla operativamente
 (Richards & Ford, 2020, cap. 7).
-
-## Análisis por enfoque
 
 **Coreografía.** Sin coordinador central: los servicios reaccionan de forma
 asíncrona al evento `SubastaFinalizada` (topología *broker* de las arquitecturas
@@ -47,8 +43,6 @@ localidad es aceptable porque no cruza fronteras; entre servicios, el flujo no t
 la red, así que el acoplamiento dinámico es prácticamente nulo. El costo se paga en
 otro lado: redesplegar todo el servicio ante cualquier cambio y perder la
 escalabilidad fina del pago (Richards & Ford, 2020, cap. 13).
-
-## Comparación y conclusión
 
 | Criterio | Coreografía | Orquestación | SBA |
 |---|---|---|---|

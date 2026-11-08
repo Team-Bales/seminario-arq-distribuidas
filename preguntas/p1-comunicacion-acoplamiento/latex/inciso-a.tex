@@ -1,15 +1,13 @@
 % P1-a — Acoplamiento dinámico. Sin preámbulo ni \subsection (los pone main.tex).
 
-\subsubsection{Marco: la connascencia}
-
 La \textbf{connascencia}, concepto que Richards y Ford (2020, cap.~3) aplican al
 análisis arquitectónico, mide el acoplamiento dinámico: dos componentes son
-connascentes si un cambio en uno obliga a modificar el otro. Interesan sus formas en tiempo de ejecución: \textbf{CoE} (el
-orden de ejecución importa), \textbf{CoT} (el momento importa; condiciones de
-carrera), \textbf{CoV} (varios valores deben cambiar juntos --- ``the worst kind of
-dynamic connascence'' en transacciones distribuidas, Richards \& Ford, 2020,
-cap.~17) y \textbf{CoI} (varios componentes comparten una estructura, como una
-cola).
+connascentes si un cambio en uno obliga a modificar el otro. Interesan sus formas
+en tiempo de ejecución: \textbf{CoE} (el orden de ejecución importa), \textbf{CoT}
+(el momento importa; condiciones de carrera), \textbf{CoV} (varios valores deben
+cambiar juntos --- ``the worst kind of dynamic connascence'' en transacciones
+distribuidas, Richards \& Ford, 2020, cap.~17) y \textbf{CoI} (varios componentes
+comparten una estructura, como una cola).
 
 Dos reglas gobiernan su uso (Richards \& Ford, 2020, cap.~3): la \textbf{localidad}
 (las formas fuertes son tolerables solo si son locales a un módulo) y la
@@ -19,8 +17,6 @@ connascencia dinámica mientras dura la espera --- acoplando disponibilidad y
 latencia de ambos lados ---, mientras que la \textbf{asíncrona}
 (\emph{fire-and-forget}) los desacopla operativamente (Richards \& Ford, 2020,
 cap.~7).
-
-\subsubsection{Análisis por enfoque}
 
 \paragraph{Coreografía.}
 Sin coordinador central: los servicios reaccionan de forma asíncrona al evento
@@ -53,8 +49,6 @@ cruza fronteras; entre servicios, el flujo no toca la red, así que el acoplamie
 dinámico es prácticamente nulo. El costo se paga en otro lado: redesplegar todo el
 servicio ante cualquier cambio y perder la escalabilidad fina del pago (Richards \&
 Ford, 2020, cap.~13).
-
-\subsubsection{Comparación y conclusión}
 
 \begin{table}[H]
   \centering
