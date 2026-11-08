@@ -1,60 +1,51 @@
 % P1-a — Acoplamiento dinámico. Sin preámbulo ni \subsection (los pone main.tex).
 
-\subsubsection{Marco: la connascencia}
+La connascencia, concepto que Richards y Ford (2020, cap.~3) aplican al análisis
+arquitectónico, mide el acoplamiento dinámico: dos componentes son connascentes si
+un cambio en uno obliga a modificar el otro. Interesan sus formas en tiempo de
+ejecución: CoE (el orden de ejecución importa), CoT (el momento importa;
+condiciones de carrera), CoV (varios valores deben cambiar juntos --- ``the worst
+kind of dynamic connascence'' en transacciones distribuidas, Richards \& Ford,
+2020, cap.~17) y CoI (varios componentes comparten una estructura, como una cola).
 
-La \textbf{connascencia}, concepto que Richards y Ford (2020, cap.~3) aplican al
-análisis arquitectónico, mide el acoplamiento dinámico: dos componentes son
-connascentes si un cambio en uno obliga a modificar el otro. Interesan sus formas en tiempo de ejecución: \textbf{CoE} (el
-orden de ejecución importa), \textbf{CoT} (el momento importa; condiciones de
-carrera), \textbf{CoV} (varios valores deben cambiar juntos --- ``the worst kind of
-dynamic connascence'' en transacciones distribuidas, Richards \& Ford, 2020,
-cap.~17) y \textbf{CoI} (varios componentes comparten una estructura, como una
-cola).
+Dos reglas gobiernan su uso (Richards \& Ford, 2020, cap.~3): la localidad (las
+formas fuertes son tolerables solo si son locales a un módulo) y la fuerza
+(preferir connascencia estática, detectable por herramientas, sobre la dinámica).
+Además, cada llamada síncrona entre servicios crea connascencia dinámica mientras
+dura la espera --- acoplando disponibilidad y latencia de ambos lados ---,
+mientras que la asíncrona (\emph{fire-and-forget}) los desacopla operativamente
+(Richards \& Ford, 2020, cap.~7).
 
-Dos reglas gobiernan su uso (Richards \& Ford, 2020, cap.~3): la \textbf{localidad}
-(las formas fuertes son tolerables solo si son locales a un módulo) y la
-\textbf{fuerza} (preferir connascencia estática, detectable por herramientas, sobre
-la dinámica). Además, cada llamada \textbf{síncrona} entre servicios crea
-connascencia dinámica mientras dura la espera --- acoplando disponibilidad y
-latencia de ambos lados ---, mientras que la \textbf{asíncrona}
-(\emph{fire-and-forget}) los desacopla operativamente (Richards \& Ford, 2020,
-cap.~7).
+En la coreografía no existe coordinador central: los servicios reaccionan de forma
+asíncrona al evento \texttt{SubastaFinalizada} (topología \emph{broker} de las
+arquitecturas dirigidas por eventos, EDA; Richards \& Ford, 2020, cap.~17). Este
+enfoque minimiza el acoplamiento dinámico: la única connascencia es el contrato
+del evento (forma débil), no hay espera síncrona, y agregar un consumidor no
+afecta a los existentes. El costo es la pérdida de control: nadie garantiza el
+orden (CoT), el estado global queda eventualmente consistente (CoV latente) y
+``no one in the system really knows when the business transaction... is actually
+complete'' (Richards \& Ford, 2020, cap.~14).
 
-\subsubsection{Análisis por enfoque}
-
-\paragraph{Coreografía.}
-Sin coordinador central: los servicios reaccionan de forma asíncrona al evento
-\texttt{SubastaFinalizada} (topología \emph{broker} de las arquitecturas dirigidas
-por eventos, EDA; Richards \& Ford, 2020, cap.~17). \textbf{Minimiza} el
-acoplamiento dinámico: la única connascencia es el contrato del evento (forma
-débil), no hay espera síncrona, y agregar un consumidor no afecta a los existentes.
-El costo es la pérdida de control: nadie garantiza el orden (CoT), el estado global
-queda eventualmente consistente (CoV latente) y ``no one in the system really knows
-when the business transaction... is actually complete'' (Richards \& Ford, 2020,
-cap.~14).
-
-\paragraph{Orquestación.}
-Un mediador posee la secuencia \emph{notificar $\rightarrow$ pagar $\rightarrow$
-actualizar} (topología \emph{mediator}, cap.~17). \textbf{Concentra} el
-acoplamiento: la connascencia de ejecución queda explícita en un solo lugar, pero el
-mediador y cada paso quedan connascentes entre sí, y cada espera de respuesta crea
+En la orquestación, un mediador posee la secuencia \emph{notificar $\rightarrow$
+pagar $\rightarrow$ actualizar} y la ejecuta paso a paso (topología
+\emph{mediator}, cap.~17). Este enfoque concentra el acoplamiento: la
+connascencia de ejecución queda explícita en un solo lugar, pero el mediador y
+cada paso quedan connascentes entre sí, y cada espera de respuesta crea
 connascencia síncrona que une a los cuatro servicios en un solo quantum --- con la
 latencia sumándose salto a salto y el mediador como posible cuello de botella
 (Richards \& Ford, 2020, caps.~9 y~14). A cambio, el mediador puede detectar
 fallos, persistir estado y reintentar o compensar: es acoplamiento a cambio de
 control.
 
-\paragraph{Service-Based Architecture (SBA).}
-Las tres acciones son llamadas a método dentro de un servicio de dominio de grano
-grueso --- ``orquestación a nivel de clase'' (Richards \& Ford, 2020, cap.~13). El
-acoplamiento dinámico se \textbf{localiza}: dentro del servicio es fuerte (CoE, CoV
-sobre una transacción ACID), pero por la regla de localidad es aceptable porque no
-cruza fronteras; entre servicios, el flujo no toca la red, así que el acoplamiento
-dinámico es prácticamente nulo. El costo se paga en otro lado: redesplegar todo el
-servicio ante cualquier cambio y perder la escalabilidad fina del pago (Richards \&
-Ford, 2020, cap.~13).
-
-\subsubsection{Comparación y conclusión}
+En Service-Based Architecture (SBA), las tres acciones son llamadas a método
+dentro de un servicio de dominio de grano grueso, lo que Richards y Ford (2020,
+cap.~13) llaman orquestación a nivel de clase. El acoplamiento dinámico se
+localiza: dentro del servicio es fuerte (CoE, CoV sobre una transacción ACID),
+pero por la regla de localidad es aceptable porque no cruza fronteras; entre
+servicios, el flujo no toca la red, así que el acoplamiento dinámico es
+prácticamente nulo. El costo se paga en otro lado: redesplegar todo el servicio
+ante cualquier cambio y perder la escalabilidad fina del pago (Richards \& Ford,
+2020, cap.~13).
 
 \begin{table}[H]
   \centering
@@ -69,7 +60,7 @@ Ford, 2020, cap.~13).
     Connascencia dominante &
       débil: contrato del evento ($\approx$ nombre) &
       fuerte: CoE en el mediador + síncrona por paso &
-      fuerte (CoE, CoV) pero \textbf{local} \\
+      fuerte (CoE, CoV) pero local \\
     Alcance del acoplamiento dinámico &
       solo el esquema del mensaje &
       mediador $\leftrightarrow$ todos los pasos &
@@ -87,10 +78,10 @@ Ford, 2020, cap.~13).
 \end{table}
 
 Los tres diseños son puntos del mismo continuo del acoplamiento dinámico: la
-coreografía lo \textbf{minimiza} a costa de visibilidad del flujo; la orquestación
-lo \textbf{concentra} en un mediador a cambio de control explícito; el SBA lo
-encierra como connascencia fuerte pero \textbf{local}, a costa de agilidad de
-despliegue y escalabilidad fina. Como dicta la Primera Ley, ``everything in software
-architecture is a trade-off'' (Richards \& Ford, 2020, cap.~1): conviene
-orquestación o grano grueso si pesa el control del flujo y la auditoría del cobro;
-coreografía si pesan la extensibilidad y el desacoplamiento de equipos.
+coreografía lo minimiza a costa de visibilidad del flujo; la orquestación lo
+concentra en un mediador a cambio de control explícito; el SBA lo encierra como
+connascencia fuerte pero local, a costa de agilidad de despliegue y escalabilidad
+fina. Como dicta la Primera Ley, ``everything in software architecture is a
+trade-off'' (Richards \& Ford, 2020, cap.~1): conviene orquestación o grano
+grueso si pesa el control del flujo y la auditoría del cobro; coreografía si
+pesan la extensibilidad y el desacoplamiento de equipos.
