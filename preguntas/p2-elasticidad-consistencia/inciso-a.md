@@ -53,18 +53,20 @@ fig. 17-13).
 cap. 15), "removing the central database as a synchronous constraint". Cada unidad
 de procesamiento resuelve la petición contra datos en memoria y envía la
 actualización de forma asíncrona por un *data pump* hasta un *data writer*, que
-escribe en la base de datos (cap. 15). Lo decisivo es que la compra no espera una
+escribe en la base de datos (cap. 15). Lo decisivo es que cada intento de reserva no espera una
 confirmación duradera. De ahí se derivan dos consecuencias:
 
 - La capacidad de procesamiento y de lectura crece con las unidades, sin depender de
   la base de datos durante el pico (cap. 15).
 - La cola del *data pump* amortigua las escrituras: la base de datos las recibe al
   ritmo que puede sostener, y el procesamiento continúa aunque el *data writer* no
-  esté disponible (caps. 7 y 15).
+  esté disponible (caps. 7 y 15). La venta firme es la excepción, como se explica en
+  el inciso b).
 
 En términos de quantum, la base de datos queda fuera del quantum arquitectónico
 (cap. 15), mientras que en Microservicios forma parte del quantum de cada servicio
-(cap. 7).
+(cap. 7). En la propuesta del inciso b), vuelve a él solo en la confirmación de la
+venta firme, no en la reserva.
 
 El límite no desaparece: se traslada a la caché, y su forma depende del modelo
 elegido (Richards & Ford, 2020, cap. 15):
@@ -105,7 +107,7 @@ aunque no su magnitud. Una arquitectura de Microservicios también puede arranca
 instancias por adelantado, de modo que la diferencia no está en la velocidad de
 arranque del cómputo, sino en qué capa debe prepararse para el pico. En Microservicios
 es el almacén duradero, que debe soportar el pico de intentos. En Space-Based es una
-capa en memoria, y el almacén duradero solo absorbe el caudal diferido.
+capa en memoria, y el almacén duradero solo absorbe las ventas firmes y el caudal diferido.
 
 ## Comparación
 
@@ -115,11 +117,11 @@ Richards y Ford (2020, caps. 15 y 17).
 | Criterio | Microservicios (diseño base) | Space-Based |
 |---|---|---|
 | Recurso limitante | almacén duradero del servicio de asientos | servidor de caché (distribuida) o replicación entre unidades (replicada) |
-| Acceso al dato en la compra | transacción síncrona con confirmación duradera | operación en memoria, remota (distribuida) o local (replicada), sin esperar a la base de datos |
+| Acceso al dato en cada intento | transacción síncrona con confirmación duradera | operación en memoria, remota (distribuida) o local (replicada), sin esperar a la base de datos |
 | Efecto de una instancia nueva | más clientes sobre el mismo almacén | más cómputo; otro cliente del servidor de caché, o una réplica que carga el estado de otra unidad |
-| Escrituras duraderas en el pico | síncronas, dentro de la transacción | encoladas y aplicadas de forma asíncrona |
+| Escrituras duraderas en el pico | síncronas, dentro de la transacción | asíncronas, salvo la venta firme, tratada en el inciso b) |
 | Qué se prepara para el pico | el almacén duradero | la capa de caché |
-| Consistencia con la base de datos | inmediata dentro del servicio | eventual |
+| Consistencia con la base de datos | inmediata dentro del servicio | eventual, salvo la venta firme |
 
 ## Las objeciones: particionar, añadir caché o encolar
 
@@ -127,17 +129,16 @@ Richards y Ford (2020, caps. 15 y 17).
 relacional única: cada servicio puede elegir el almacenamiento que más le convenga
 (Richards & Ford, 2020, cap. 17). Una escritura condicional por asiento sobre un
 almacén particionado es una alternativa seria, que además conserva un árbitro
-duradero. Tiene, no obstante, tres costos, según nuestro análisis. En un lanzamiento
+duradero. Tiene, no obstante, dos costos, según nuestro análisis. En un lanzamiento
 la demanda se concentra en un solo concierto, de modo que particionar por concierto
-no reparte nada. Particionar más fino complica reservar varios asientos de forma
-atómica. Y cada intento sigue esperando una confirmación duradera, por lo que esa
+no reparte nada. Además, cada intento sigue esperando una confirmación duradera, por lo que esa
 capa debe dimensionarse de antemano para el pico.
 
 **Añadir caché.** El libro admite la caché y la replicación en Microservicios
 (Richards & Ford, 2020, cap. 17), e incluso propone cachear como solución pragmática
 si el límite es la base de datos (cap. 23). La escritura asíncrona tampoco distingue
 a los estilos, porque ambos usan mensajería como *data pumps* (cap. 14). Lo propio de
-Space-Based es resolver toda la transacción contra datos en memoria e incorporar, como
+Space-Based es resolver contra datos en memoria todos los intentos de reserva e incorporar, como
 parte del estilo, la sincronización de la caché y la gestión elástica de las unidades.
 
 Este análisis no afirma que Microservicios no pueda alcanzar esta carga. Afirma que
@@ -161,8 +162,8 @@ figs. 15-15 y 17-13). Las pruebas a carga máxima son tan difíciles que suelen 
 haciéndose en producción (cap. 15), un riesgo serio cuando cada lanzamiento es
 irrepetible. El libro añade que es un estilo relativamente caro, por las licencias
 de caché y el alto consumo de recursos, y que hay que cuidar que ningún fallo pierda
-datos (cap. 15), un riesgo directo cuando la compra confirmada se escribe de forma
-asíncrona. Si cayeran todas las unidades, la caché tendría que recargarse desde la
+datos (cap. 15), un riesgo directo para cualquier compra cuya confirmación dependa de una
+escritura asíncrona. Si cayeran todas las unidades, la caché tendría que recargarse desde la
 base de datos (cap. 15). Space-Based tampoco resuelve otros cuellos de botella: una
 pasarela de pago externa no se vuelve elástica porque lo sea el sistema, y habrá que
 separar la reserva del cobro.
@@ -181,7 +182,7 @@ de elasticidad (Richards & Ford, 2020, cap. 15), pero la razón de fondo no es u
 puntuación más alta. Los dos estilos pueden alcanzar esta carga, y la diferencia está
 en qué hay que preparar para el pico: Microservicios necesita un almacén duradero
 dimensionado de antemano para los intentos, mientras que Space-Based traslada ese
-pico a una capa en memoria y deja a la base de datos solo el flujo diferido. Si la
+pico a una capa en memoria y deja a la base de datos solo las ventas firmes y el flujo diferido. Si la
 carga se repartiera entre dominios y la prioridad fuera la evolución independiente,
 Microservicios sería la mejor opción. El precio de la elección es la consistencia
 eventual con la base de datos y, según el modelo de caché, el riesgo de colisiones o
