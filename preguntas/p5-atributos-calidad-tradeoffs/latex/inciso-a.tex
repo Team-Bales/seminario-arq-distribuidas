@@ -1,1 +1,31 @@
 % P5-a — Consistencia de datos. Sin preámbulo ni \subsection.
+\subsubsection{Comparación}
+
+La \textbf{Service-Based Architecture (SBA)} organiza el sistema en servicios de grano
+relativamente amplio. En este estilo es más habitual que los servicios compartan
+una base de datos o un mismo límite transaccional, por lo que una operación que
+actualiza varias entidades puede ejecutarse como una única transacción ACID. Así,
+los cambios se confirman todos juntos o se revierten todos juntos, con menos
+coordinación entre procesos remotos.
+
+En \textbf{Microservices Architecture}, cada microservicio suele ser dueño de sus datos
+y de su esquema. Una operación financiera que atraviesa varios microservicios
+atraviesa también varios límites transaccionales. Puede usarse una transacción
+distribuida, como two-phase commit, para buscar atomicidad global, pero esto añade
+latencia, bloqueo de recursos y dependencia de la disponibilidad de la red y de
+todos los participantes. Alternativas habituales como Saga, eventos y
+compensaciones mejoran la resiliencia, pero normalmente proporcionan consistencia
+eventual, no una garantía ACID global.
+
+\subsubsection{Decisión}
+
+Para el requisito prioritario de \textbf{consistencia absoluta}, SBA es la opción más
+adecuada. Su menor cantidad de límites transaccionales hace más sencillo preservar
+las propiedades ACID y razonar sobre ellas. Microservices puede alcanzar
+consistencia fuerte, pero requiere coordinación distribuida y acepta una mayor
+complejidad operativa y de diseño.
+
+Esto no significa que SBA garantice ACID automáticamente: todavía son necesarios
+un diseño correcto de transacciones, restricciones, aislamiento y recuperación.
+Significa que, para este caso, SBA ofrece un camino más directo y menos costoso
+hacia la consistencia exigida [Richards y Ford, 2020; Ford et al., 2021].
