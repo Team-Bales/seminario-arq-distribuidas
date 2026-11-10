@@ -6,7 +6,9 @@ relativamente amplio. En este estilo es más habitual que los servicios comparta
 una base de datos o un mismo límite transaccional, por lo que una operación que
 actualiza varias entidades puede ejecutarse como una única transacción ACID. Así,
 los cambios se confirman todos juntos o se revierten todos juntos, con menos
-coordinación entre procesos remotos.
+coordinación entre procesos remotos. El grano grueso de SBA preserva las
+transacciones ACID mejor que otros estilos distribuidos [Richards \& Ford, 2020,
+cap. 13].
 
 En \textbf{Microservices Architecture}, cada microservicio suele ser dueño de sus datos
 y de su esquema. Una operación financiera que atraviesa varios microservicios
@@ -15,7 +17,18 @@ distribuida, como two-phase commit, para buscar atomicidad global, pero esto añ
 latencia, bloqueo de recursos y dependencia de la disponibilidad de la red y de
 todos los participantes. Alternativas habituales como Saga, eventos y
 compensaciones mejoran la resiliencia, pero normalmente proporcionan consistencia
-eventual, no una garantía ACID global.
+eventual, no una garantía ACID global [Richards \& Ford, 2020, cap. 13].
+
+Respecto al \textbf{despliegue independiente}, Microservices ofrece una ventaja: cada
+microservicio puede evolucionar y desplegarse por separado cuando sus contratos
+son compatibles. En SBA, el mayor tamaño de los servicios reduce esa independencia;
+un cambio en un servicio puede exigir probar el servicio completo, incluido el
+flujo de pago [Richards \& Ford, 2020, cap. 13].
+
+Para un \textbf{equipo con experiencia mixta}, SBA suele ser más accesible, porque es
+uno de los estilos distribuidos más sencillos y baratos de implementar. Microservices
+exige mayor dominio de despliegues independientes, observabilidad, comunicación
+remota y consistencia entre datos distribuidos [Richards \& Ford, 2020, cap. 13].
 
 \subsubsection{Decisión}
 
@@ -23,9 +36,9 @@ Para el requisito prioritario de \textbf{consistencia absoluta}, SBA es la opci�
 adecuada. Su menor cantidad de límites transaccionales hace más sencillo preservar
 las propiedades ACID y razonar sobre ellas. Microservices puede alcanzar
 consistencia fuerte, pero requiere coordinación distribuida y acepta una mayor
-complejidad operativa y de diseño.
+complejidad operativa y de diseño [Richards \& Ford, 2020, cap. 13].
 
 Esto no significa que SBA garantice ACID automáticamente: todavía son necesarios
 un diseño correcto de transacciones, restricciones, aislamiento y recuperación.
 Significa que, para este caso, SBA ofrece un camino más directo y menos costoso
-hacia la consistencia exigida [Richards y Ford, 2020; Ford et al., 2021].
+hacia la consistencia exigida [Richards \& Ford, 2020, cap. 13].
