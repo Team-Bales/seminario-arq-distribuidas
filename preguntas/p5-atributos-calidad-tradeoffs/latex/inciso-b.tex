@@ -1,1 +1,43 @@
 % P5-b — Despliegue independiente y trade-offs. Sin preámbulo ni \subsection.
+\subsubsection{Capacidad de despliegue independiente}
+
+En \textbf{Microservices Architecture}, cada microservicio puede versionarse, probarse
+y desplegarse de forma independiente, siempre que sus contratos sean compatibles
+con las versiones consumidoras. Esto permite entregar nuevas características con
+mayor frecuencia y limitar el alcance de un cambio a los servicios afectados. Sin
+embargo, la independencia no es absoluta: los cambios de contratos, esquemas o
+flujos distribuidos todavía requieren coordinación.
+
+En \textbf{Service-Based Architecture (SBA)}, los servicios suelen ser más grandes y
+compartir una base de datos, un modelo de dominio o procesos transaccionales. Por
+eso, un cambio que afecta datos compartidos o un contrato común puede exigir
+coordinar varios servicios y desplegarlos como una unidad lógica. SBA conserva
+ventajas de modularidad, pero ofrece menos independencia de despliegue que
+Microservices.
+
+\subsubsection{Trade-offs si se prioriza la consistencia}
+
+Si el CTO prioriza la consistencia ACID absoluta, debe aceptar sacrificar parte de
+la agilidad de despliegue. La elección de SBA simplifica las transacciones y hace
+más directo mantener una visión consistente de los datos, pero puede implicar:
+
+\begin{itemize}
+  \item releases coordinados y ventanas de despliegue más amplias;
+  \item mayor acoplamiento entre equipos y servicios que comparten datos;
+  \item menor libertad para elegir tecnologías o escalar cada parte por separado; y
+  \item que un cambio pequeño tenga un ciclo de validación más grande.
+\end{itemize}
+
+Microservices conserva una mayor independencia, pero para mantener consistencia
+fuerte entre servicios necesita coordinación distribuida, por ejemplo mediante
+two-phase commit u otro mecanismo equivalente. Esto aumenta la latencia, la
+complejidad operativa y la sensibilidad a fallos de red. Si se eligen Saga,
+eventos o compensaciones, se gana resiliencia, pero normalmente se acepta
+consistencia eventual en los límites distribuidos.
+
+El compromiso razonable es elegir SBA para los flujos financieros que requieren
+ACID y limitar la coordinación mediante contratos estables, compatibilidad hacia
+atrás y migraciones graduales. Los componentes que no participan en esas
+transacciones pueden evolucionar con mayor independencia. Así, el CTO prioriza la
+corrección financiera sin asumir que todo el sistema debe desplegarse siempre como
+un único bloque (Richards \& Ford, 2020, cap.~13).
