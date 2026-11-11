@@ -39,4 +39,4 @@ ACID y limitar la coordinación mediante contratos estables, compatibilidad haci
 atrás y migraciones graduales. Los componentes que no participan en esas
 transacciones pueden evolucionar con mayor independencia. Así, el CTO prioriza la
 corrección financiera sin asumir que todo el sistema debe desplegarse siempre como
-un único bloque [Richards y Ford, 2020; Ford et al., 2021].
+un único bloque (Richards & Ford, 2020, cap. 13).
