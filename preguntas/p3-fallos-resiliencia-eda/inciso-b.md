@@ -1,7 +1,7 @@
 # P3-b — Workflow Event Pattern
 
 El *Workflow Event Pattern*, descrito en el Capítulo 14 de *Software Architecture: The
-Hard Parts* (Ford, Richards, Sadalage y Dehghani, O'Reilly, 2021), ofrece un mecanismo
+Hard Parts* (Ford et al., 2021), ofrece un mecanismo
 basado en tres principios: **delegación, contención y reparación**.
 
 ## Funcionamiento: delegación, contención y reparación

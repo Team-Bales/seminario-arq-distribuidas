@@ -19,7 +19,7 @@ coreografía sin generar una maraña de dependencias implícitas, difíciles de 
 y mantener.
 
 Conviene distinguir aquí dos variantes del patrón *Saga*, formalizadas por Chris
-Richardson en *Microservices Patterns* (Manning, 2018): la **choreography saga**,
+Richardson en *Microservices Patterns* (Richardson, 2018): la **choreography saga**,
 donde cada servicio reacciona a eventos y decide su siguiente acción de forma
 autónoma; y la **orchestration saga**, donde un componente central —típicamente otro
 microservicio más del ecosistema, no un motor externo tipo BPM— coordina las llamadas

@@ -17,7 +17,7 @@ consumidoras y servicios compartidos, lo que dificultaba la evolución independi
 y creaba cuellos de botella en el cambio (Richards & Ford, 2020, cap. 16).
 
 Los microservicios, en cambio, se apoyan en el concepto de *Bounded Context* del
-*Domain-Driven Design* (Eric Evans, 2003): cada servicio modela un dominio o flujo
+*Domain-Driven Design* (Evans, 2003): cada servicio modela un dominio o flujo
 completo, con sus propios datos y reglas de negocio, dentro de una frontera explícita.
 Para evitar el acoplamiento y los problemas de despliegue independiente, **se prefiere
 duplicar pequeñas porciones de código de negocio** —validaciones específicas, clases de
@@ -28,8 +28,8 @@ Esta postura tensiona conscientemente el principio DRY (*Don't Repeat Yourself*)
 válido dentro de un *Bounded Context*, pero deliberadamente relajado entre servicios:
 el arquitecto acepta duplicar tres líneas de validación de cliente en dos servicios
 antes que introducir una dependencia contractual que frene el despliegue independiente
-de cualquiera de ellos. Como advierte Sam Newman en *Building Microservices* (O'Reilly,
-2.ª ed., 2021), las librerías compartidas no son la respuesta al problema de la
+de cualquiera de ellos. Como advierte Sam Newman en *Building Microservices*
+(Newman, 2021), las librerías compartidas no son la respuesta al problema de la
 reutilización en microservicios. La única excepción tolerable, y aun así con precaución,
 es la compartición de contratos tipados (como DTOs o esquemas *protobuf*), que no
 contienen lógica de negocio pero aseguran compatibilidad de interfaces.
