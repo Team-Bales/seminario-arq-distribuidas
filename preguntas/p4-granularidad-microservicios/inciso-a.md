@@ -34,9 +34,9 @@ contratación cruza ahora límites de servicio en cada paso: construir
 transacciones a través de fronteras de microservicios viola el principio de
 desacoplamiento que sostiene al estilo, y además genera connascencia de
 valores entre servicios, la peor forma de connascencia dinámica (Richards &
-Ford, 2020, cap. 17). El consejo de los propios autores es elocuente: "Don't
-do transactions in microservices—fix granularity instead!" (Richards & Ford,
-2020, cap. 17). En términos de
+Ford, 2020, cap. 17). El consejo de los propios autores es elocuente: no hacer
+transacciones entre microservicios, sino corregir la granularidad (Richards &
+Ford, 2020, cap. 17). En términos de
 **rendimiento y fiabilidad**, cada llamada síncrona adicional entre servicios suma
 latencia de red y un nuevo punto de fallo (Richards & Ford, 2020, cap. 9), así que
 encadenar a casi todos los servicios para una sola operación de negocio multiplica

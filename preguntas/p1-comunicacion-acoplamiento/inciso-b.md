@@ -7,14 +7,14 @@ durabilidad) frente a BASE (disponibilidad básica, estado flexible, consistenci
 eventual; Richards & Ford, 2020, cap. 13)— y sobre la tolerancia a fallos, es
 decir, qué tan rápido el sistema detecta el fallo y recupera un estado correcto.
 La connascencia de valores (CoV) es otra vez la clave: cuando una transacción de
-negocio cruza límites de servicio, "creates the worst kind of dynamic
-connascence" (Richards & Ford, 2020, cap. 17), porque varios estados remotos
-deben cambiar juntos o no cambiar.
+negocio cruza límites de servicio, se genera la peor forma de connascencia
+dinámica (Richards & Ford, 2020, cap. 17), porque varios estados remotos deben
+cambiar juntos o no cambiar.
 
-En la coreografía, el servicio de pago falla sin que nadie más lo note: "no one
-in the system is aware of that crash... the Inventory event processor still
-decrements the inventory, and all other event processors react as though
-everything is fine" (Richards & Ford, 2020, cap. 14). En el escenario, el ganador
+En la coreografía, el servicio de pago falla sin que nadie más lo note: nadie en
+el sistema se entera de ese fallo, el procesador de inventario sigue
+decrementando el stock y el resto de los procesadores reacciona como si todo
+estuviera bien (Richards & Ford, 2020, cap. 14). En el escenario, el ganador
 ya fue notificado —un efecto irreversible— y el pago queda bloqueado mientras el
 resto del flujo avanza como si hubiera tenido éxito: es BASE en su forma más
 débil, disponible pero sin garantía de completar la transacción de negocio ni de
@@ -25,10 +25,9 @@ propio servicio de inventario escuche un evento de compensación (Richardson,
 2018).
 
 En la orquestación, el mediador conoce el estado de cada paso: si el pago falla,
-detiene el flujo y persiste el estado en su propio almacén —"the mediator...
-stops the workflow and records the state of the request... once payment is
-eventually applied, the workflow can be restarted from where it left off"
-(Richards & Ford, 2020, cap. 14)—, o dispara las compensaciones del patrón Saga:
+detiene el flujo, registra el estado de la petición en su propio almacén y, una
+vez que el pago se aplique, retoma el flujo justo donde quedó (Richards & Ford,
+2020, cap. 14), o dispara las compensaciones del patrón Saga:
 en esta secuencia solo la notificación precede al pago, y como no puede
 retirarse, se compensa con un segundo aviso; el inventario ni siquiera llega a
 tocarse (Richards & Ford, 2020, cap. 17). Sigue siendo

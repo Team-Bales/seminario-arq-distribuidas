@@ -4,9 +4,9 @@ La connascencia, concepto que Richards y Ford (2020, cap. 3) aplican al análisi
 arquitectónico, mide el acoplamiento dinámico: dos componentes son connascentes si
 un cambio en uno obliga a modificar el otro. Interesan sus formas en tiempo de
 ejecución: CoE (el orden de ejecución importa), CoT (el momento importa;
-condiciones de carrera), CoV (varios valores deben cambiar juntos — "the worst
-kind of dynamic connascence" en transacciones distribuidas, Richards & Ford, 2020,
-cap. 17) y CoI (varios componentes comparten una estructura, como una cola).
+condiciones de carrera), CoV (varios valores deben cambiar juntos — la peor
+forma de connascencia dinámica en transacciones distribuidas, Richards & Ford,
+2020, cap. 17) y CoI (varios componentes comparten una estructura, como una cola).
 
 Tres propiedades gobiernan su uso (Richards & Ford, 2020, cap. 3): la fuerza
 (preferir connascencia estática, detectable por herramientas, sobre la dinámica),
@@ -23,9 +23,9 @@ enfoque minimiza el acoplamiento dinámico: la única connascencia explícita es
 el contrato del evento (forma débil), no hay espera síncrona, y agregar un
 consumidor no afecta a los existentes. El costo es la pérdida de control: nadie
 garantiza el orden de ejecución (CoE) ni evita las carreras entre consumidores
-(CoT), el estado global queda eventualmente consistente (CoV latente) y "no
-one in the system really knows when the business transaction... is actually
-complete" (Richards & Ford, 2020, cap. 14).
+(CoT), el estado global queda eventualmente consistente (CoV latente) y nadie
+en el sistema sabe realmente cuándo se completa la transacción de negocio
+(Richards & Ford, 2020, cap. 14).
 
 En la orquestación, un mediador posee la secuencia *notificar → pagar →
 actualizar* y la ejecuta paso a paso (topología *mediator*, cap. 17). Suponemos
@@ -61,7 +61,7 @@ Los tres diseños son puntos del mismo continuo del acoplamiento dinámico: la
 coreografía lo minimiza a costa de visibilidad del flujo; la orquestación lo
 concentra en un mediador a cambio de control explícito; el SBA lo encierra como
 connascencia fuerte pero local, a costa de agilidad de despliegue y escalabilidad
-fina. Como dicta la Primera Ley, "everything in software architecture is a
-trade-off" (Richards & Ford, 2020, cap. 1): conviene orquestación o grano grueso
+fina. Como dicta la Primera Ley, todo en la arquitectura de software es un
+trade-off (Richards & Ford, 2020, cap. 1): conviene orquestación o grano grueso
 si pesa el control del flujo y la auditoría del cobro; coreografía si pesan la
 extensibilidad y el desacoplamiento de equipos.
