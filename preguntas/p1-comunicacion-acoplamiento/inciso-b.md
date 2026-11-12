@@ -21,15 +21,17 @@ débil, disponible pero sin garantía de completar la transacción de negocio ni
 deshacer lo ya hecho. La recuperación exige mecanismos añadidos por fuera de la
 topología: colas con reintento y cola de mensajes fallidos (*dead-letter queue*),
 un patrón *outbox* para no perder el evento, o una saga coreografiada donde el
-propio servicio de inventario escuche un evento de compensación.
+propio servicio de inventario escuche un evento de compensación (Richardson,
+2018).
 
 En la orquestación, el mediador conoce el estado de cada paso: si el pago falla,
 detiene el flujo y persiste el estado en su propio almacén —"the mediator...
 stops the workflow and records the state of the request... once payment is
 eventually applied, the workflow can be restarted from where it left off"
 (Richards & Ford, 2020, cap. 14)—, o dispara las compensaciones del patrón Saga:
-deshacer (*undo*) los pasos ya completados, como retirar la notificación o
-liberar el inventario reservado (Richards & Ford, 2020, cap. 17). Sigue siendo
+en esta secuencia solo la notificación precede al pago, y como no puede
+retirarse, se compensa con un segundo aviso; el inventario ni siquiera llega a
+tocarse (Richards & Ford, 2020, cap. 17). Sigue siendo
 BASE —no hay rollback atómico real entre servicios—, pero es una consistencia
 eventual *gobernada*: el mediador garantiza que el proceso termine en un estado
 conocido, a cambio del acoplamiento que ya se pagó en el inciso a.

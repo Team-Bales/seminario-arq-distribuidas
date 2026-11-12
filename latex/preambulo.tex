@@ -4,9 +4,19 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish,es-tabla,es-nodecimaldot]{babel}
+
+% Evita cortes feos en los títulos de sección (p. ej. "Mi-croservicios",
+% "Mo-dernas" en los títulos de P4 y P6).
+\hyphenation{Microservicios Modernas}
 \usepackage{lmodern}
 \usepackage{microtype}
 \usepackage[a4paper,margin=2.5cm]{geometry}
+
+% Índice solo hasta nivel de inciso (subsection): algunos incisos usan
+% \subsubsection internamente y otros no, así que mostrarlas en el índice
+% lo dejaba desparejo entre preguntas. Los títulos siguen apareciendo en el
+% cuerpo del documento, solo se omiten del índice.
+\setcounter{tocdepth}{2}
 
 \usepackage{graphicx}
 % Las rutas de las imágenes son relativas a la raíz del repo, por ejemplo:

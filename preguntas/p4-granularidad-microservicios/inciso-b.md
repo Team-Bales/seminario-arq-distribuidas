@@ -11,17 +11,19 @@ expone altas, bajas y modificaciones del registro no tiene un propósito de nego
 propio: es la base de datos con una interfaz de red delante.
 
 **Transacciones.** Las entidades que deben cambiar juntas dentro de la misma
-transacción de negocio señalan una buena frontera de servicio (Richards & Ford,
-2020, cap. 17). Contratar a un empleado es una única transacción de negocio: el
-alta del empleado, la configuración inicial de su nómina y su inscripción en el
-plan de beneficios deben confirmarse o revertirse juntas. Por eso deben vivir
-dentro del mismo servicio, en vez de repartirse entre tres servicios que luego
-necesitan coordinarse por la red.
+transacción de negocio a menudo señalan una buena frontera de servicio
+(Richards & Ford, 2020, cap. 17). Suponemos que contratar a un empleado es una
+única transacción de negocio —que el alta del empleado, la configuración
+inicial de su nómina y su inscripción en el plan de beneficios deben
+confirmarse o revertirse juntas—, una decisión que debe validarse con el
+dueño del dominio y no una propiedad universal del proceso. Bajo ese supuesto,
+esas tres partes deben vivir dentro del mismo servicio, en vez de repartirse
+entre tres servicios que luego necesitan coordinarse por la red.
 
 **Coreografía.** Cuando un conjunto de servicios con buen aislamiento de dominio
 termina necesitando comunicación excesiva entre sí para completar una operación,
-la señal correcta es reagruparlos en un servicio más grande, no multiplicar las
-llamadas entre ellos (Richards & Ford, 2020, cap. 17). Esa es exactamente la
+el arquitecto puede considerar reagruparlos en un servicio más grande, en vez de
+multiplicar las llamadas entre ellos (Richards & Ford, 2020, cap. 17). Esa es exactamente la
 situación de RRHH: el aislamiento por entidad parecía limpio en el papel, pero el
 costo real apareció al ejecutar el *workflow* completo de contratación.
 
@@ -36,7 +38,8 @@ empleado—, así que puede seguir siendo un servicio independiente sin introduc
 una transacción distribuida: la consulta no necesita ser atómica con el alta.
 
 Todo lo que no forma parte de ese núcleo transaccional se resuelve por
-**coreografía** en vez de orquestación síncrona: aprovisionar el equipo de TI,
+**coreografía asíncrona basada en eventos**, en vez de llamadas síncronas
+encadenadas: aprovisionar el equipo de TI,
 notificar al gerente del área, actualizar el directorio corporativo. En vez de que
 `ServicioContratación` llame uno por uno a esos servicios y espere su respuesta,
 publica un único evento `EmpleadoContratado` al confirmar la transacción, y cada
