@@ -1,0 +1,23 @@
+% conclusiones.tex — Conclusiones del documento.
+% main.tex la incluye después de P6 y antes de Referencias.
+
+\section*{Conclusiones}
+\addcontentsline{toc}{section}{Conclusiones}
+
+Las seis preguntas de este seminario abordan problemas distintos
+—acoplamiento, elasticidad, resiliencia, granularidad, calidad y
+reutilización—, pero llegan a la misma idea: ningún estilo domina a los
+demás, porque cada decisión de diseño cambia una característica por otra. La
+coreografía gana desacoplamiento y pierde visibilidad del flujo (P1);
+Space-Based gana elasticidad y paga consistencia eventual (P2); el
+\emph{Workflow Event Pattern} preserva la capacidad de respuesta del sistema
+a costa de procesar los mensajes fuera de orden (P3); fijar la granularidad
+por transacción de negocio reduce el acoplamiento a cambio de servicios más
+grandes (P4); Service-Based Architecture ofrece consistencia más simple a
+costa de agilidad de despliegue (P5); y los microservicios duplican código de
+negocio para proteger su independencia de despliegue (P6).
+
+Como resume la Primera Ley de la arquitectura de software, ``everything in
+software architecture is a trade-off'' (Richards \& Ford, 2020, cap.~1): la
+arquitectura correcta es la que elige conscientemente qué característica
+sacrificar según las prioridades reales del sistema.

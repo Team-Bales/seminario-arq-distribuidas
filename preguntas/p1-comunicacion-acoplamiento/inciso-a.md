@@ -8,10 +8,10 @@ condiciones de carrera), CoV (varios valores deben cambiar juntos — "the worst
 kind of dynamic connascence" en transacciones distribuidas, Richards & Ford, 2020,
 cap. 17) y CoI (varios componentes comparten una estructura, como una cola).
 
-Dos reglas gobiernan su uso (Richards & Ford, 2020, cap. 3): la localidad (las
-formas fuertes son tolerables solo si son locales a un módulo) y la fuerza
-(preferir connascencia estática, detectable por herramientas, sobre la dinámica).
-Además, cada llamada síncrona entre servicios crea connascencia dinámica mientras
+Tres propiedades gobiernan su uso (Richards & Ford, 2020, cap. 3): la fuerza
+(preferir connascencia estática, detectable por herramientas, sobre la dinámica),
+la localidad (las formas fuertes son menos dañinas cuanto más próximos están los
+elementos que conectan, según la regla de Weirich) y el grado. Además, cada llamada síncrona entre servicios crea connascencia dinámica mientras
 dura la espera —acoplando disponibilidad y latencia de ambos lados—, mientras que
 la asíncrona (*fire-and-forget*) los desacopla operativamente (Richards & Ford,
 2020, cap. 7).
@@ -19,22 +19,26 @@ la asíncrona (*fire-and-forget*) los desacopla operativamente (Richards & Ford,
 En la coreografía no existe coordinador central: los servicios reaccionan de
 forma asíncrona al evento `SubastaFinalizada` (topología *broker* de las
 arquitecturas dirigidas por eventos, EDA; Richards & Ford, 2020, cap. 17). Este
-enfoque minimiza el acoplamiento dinámico: la única connascencia es el contrato
-del evento (forma débil), no hay espera síncrona, y agregar un consumidor no
-afecta a los existentes. El costo es la pérdida de control: nadie garantiza el
-orden (CoT), el estado global queda eventualmente consistente (CoV latente) y "no
+enfoque minimiza el acoplamiento dinámico: la única connascencia explícita es
+el contrato del evento (forma débil), no hay espera síncrona, y agregar un
+consumidor no afecta a los existentes. El costo es la pérdida de control: nadie
+garantiza el orden de ejecución (CoE) ni evita las carreras entre consumidores
+(CoT), el estado global queda eventualmente consistente (CoV latente) y "no
 one in the system really knows when the business transaction... is actually
 complete" (Richards & Ford, 2020, cap. 14).
 
 En la orquestación, un mediador posee la secuencia *notificar → pagar →
-actualizar* y la ejecuta paso a paso (topología *mediator*, cap. 17). Este enfoque
-concentra el acoplamiento: la connascencia de ejecución queda explícita en un
-solo lugar, pero el mediador y cada paso quedan connascentes entre sí, y cada
-espera de respuesta crea connascencia síncrona que une a los cuatro servicios en
-un solo quantum —con la latencia sumándose salto a salto y el mediador como
-posible cuello de botella (Richards & Ford, 2020, caps. 9 y 14). A cambio, el
-mediador puede detectar fallos, persistir estado y reintentar o compensar: es
-acoplamiento a cambio de control.
+actualizar* y la ejecuta paso a paso (topología *mediator*, cap. 17). Suponemos
+aquí un mediador que invoca cada paso de forma síncrona (petición-respuesta); si
+en cambio enviara comandos asíncronos, conservaría el control del flujo sin
+fundir los servicios en un solo quantum. Bajo ese supuesto, el enfoque concentra
+el acoplamiento: la connascencia de ejecución queda explícita en un solo lugar,
+pero el mediador y cada paso quedan connascentes entre sí, y cada espera de
+respuesta crea connascencia síncrona que une a los cuatro servicios en un solo
+quantum (Richards & Ford, 2020, cap. 7), con la latencia sumándose salto a salto
+y el mediador como posible cuello de botella (Richards & Ford, 2020, cap. 9). A
+cambio, el mediador puede detectar fallos, persistir estado y reintentar o
+compensar: es acoplamiento a cambio de control.
 
 En Service-Based Architecture (SBA), las tres acciones son llamadas a método
 dentro de un servicio de dominio de grano grueso, lo que Richards y Ford (2020,
